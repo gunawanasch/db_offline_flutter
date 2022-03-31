@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'api_exception.dart';
 
 class APIBaseHelper {
-  final String _baseUrl = "baseurl/api_simple_customer/";
+  final String _baseUrl = "https://baseurl/api_simple_customer/";
   final Dio _dio = Dio();
 
   Future<Response> get(String url) async {
@@ -18,7 +18,7 @@ class APIBaseHelper {
       );
       responseJson = _returnResponse(response);
     } on SocketException {
-      throw FetchDataException("No Internet connection");
+      throw FetchDataException("No internet connection");
     }
 
     return responseJson;
