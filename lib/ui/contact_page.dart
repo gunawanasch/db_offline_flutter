@@ -4,9 +4,8 @@ import 'package:db_offline_flutter/bloc/contact/contact_state.dart';
 import 'package:db_offline_flutter/library/colors.dart';
 import 'package:db_offline_flutter/model/contact_model.dart';
 import 'package:db_offline_flutter/repository/contact_repository.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ContactPage extends StatefulWidget {
@@ -51,6 +50,7 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
       child: TextField(
         decoration: _decoration,
         controller: _phoneController,
+        keyboardType: TextInputType.phone,
       ),
     );
   }
@@ -116,27 +116,40 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
         _addressController.text = contactModel.address!;
         _phoneController.text = contactModel.phone!;
       });
+    } else {
+      setState(() {
+        _nameController.text = "";
+        _phoneController.text = "";
+        _addressController.text = "";
+      });
     }
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (_) => SafeArea(
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("Name"),
-                _nameTextField(),
-                const SizedBox(height: 20),
-                const Text("Phone"),
-                _phoneTextField(),
-                const SizedBox(height: 20),
-                const Text("Address"),
-                _addressTextField(),
-                const SizedBox(height: 50),
-                _saveButton(contactModel?.idContact),
-              ],
+          child: SingleChildScrollView(
+            child: AnimatedPadding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              duration: const Duration(milliseconds: 100),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Name"),
+                    _nameTextField(),
+                    const SizedBox(height: 20),
+                    const Text("Phone"),
+                    _phoneTextField(),
+                    const SizedBox(height: 20),
+                    const Text("Address"),
+                    _addressTextField(),
+                    const SizedBox(height: 50),
+                    _saveButton(contactModel?.idContact),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -223,58 +236,12 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
                     content: Text("Error create widget")));
               },
             ),
-            // listener: (context, state) {
-            //   if (state is ContactLoading) {
-            //     Center(child: CircularProgressIndicator());
-            //   } else if (state is ContactSuccess) {
-            //     _listContact = state.listContact;
-            //     if (_listContact.isNotEmpty) {
-            //       ListView.builder(
-            //         itemCount: _listContact.length,
-            //         itemBuilder: (BuildContext context, int index) {
-            //           return ContactRow(contactModel: _listContact[index]);
-            //         }
-            //       );
-            //     } else {
-            //       Center();
-            //     }
-            //   } else if (state is ContactError) {
-            //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //         content: Text("${state.message}")));
-            //   }
-            // },
           ),
-            // child: BlocListener<ContactBloc, ContactState>(
-            //   listener: (context, state) {
-            //     if (state is ContactLoading) {
-            //       CustomLoading();
-            //     } else if (state is ContactSuccess) {
-            //       _listContact = state.listContact;
-            //       ListView.builder(
-            //           itemCount: _listContact.length,
-            //           itemBuilder: (BuildContext context, int index) {
-            //             return ContactRow(contactModel: _listContact[index]);
-            //           }
-            //       );
-            //     } else if (state is ContactError) {
-            //       Navigator.of(context).pop();
-            //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //           content: Text("${state.message}")));
-            //     }
-            //   },
-            // ),
-          //),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showFormContactBottomSheet(null);
-          // showModalBottomSheet(
-          //     context: context,
-          //     builder: (context) {
-          //       return const ContactFormBottomSheet();
-          //     },
-          // );
         },
         backgroundColor: PrimaryDarkColor,
         child: const Icon(Icons.add),
@@ -291,184 +258,6 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
     _contactBloc.close();
   }
 }
-
-
-
-// class ContactFormBottomSheet extends StatefulWidget {
-//   const ContactFormBottomSheet({Key? key}) : super(key: key);
-//
-//   @override
-//   State<ContactFormBottomSheet> createState() => _ContactFormBottomSheetState();
-// }
-//
-// class _ContactFormBottomSheetState extends State<ContactFormBottomSheet> {
-//   final _nameController = TextEditingController();
-//   final _phoneController = TextEditingController();
-//   final _addressController = TextEditingController();
-//
-//   final InputDecoration _decoration = const InputDecoration(
-//     focusedBorder: UnderlineInputBorder(
-//       borderSide: BorderSide(color: PrimaryDarkColor),
-//     ),
-//   );
-//
-//   Widget _nameTextField() {
-//     return Container(
-//       width: MediaQuery.of(context).size.width,
-//       child: TextField(
-//         decoration: _decoration,
-//         controller: _nameController,
-//       ),
-//     );
-//   }
-//
-//   Widget _phoneTextField() {
-//     return Container(
-//       width: MediaQuery.of(context).size.width,
-//       child: TextField(
-//         decoration: _decoration,
-//         controller: _phoneController,
-//       ),
-//     );
-//   }
-//
-//   Widget _addressTextField() {
-//     return Container(
-//       width: MediaQuery.of(context).size.width,
-//       child: TextField(
-//         decoration: _decoration,
-//         controller: _addressController,
-//       ),
-//     );
-//   }
-//
-//   Widget _saveButton() {
-//     return Container(
-//       width: MediaQuery.of(context).size.width,
-//       child: ElevatedButton(
-//         style: ElevatedButton.styleFrom(
-//           primary: PrimaryColor,
-//           minimumSize: const Size.fromHeight(50),
-//         ),
-//         onPressed: () {
-//           if (_nameController.text.trim().isEmpty || _phoneController.text.trim().isEmpty || _addressController.text.trim().isEmpty) {
-//             showDialog(
-//               context: context,
-//               builder: (ctx) => AlertDialog(
-//                 content: Text("Please complete all field."),
-//                 actions: <Widget>[
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(ctx).pop();
-//                     },
-//                     child: Text("OK"),
-//                   ),
-//                 ],
-//               ),
-//             );
-//           } else {
-//             ContactModel contactModel = ContactModel();
-//             contactModel.name = _nameController.text.trim();
-//             contactModel.phone = _phoneController.text.trim();
-//             contactModel.address = _addressController.text.trim();
-//             BlocProvider.of<ContactBloc>(context).add(AddContact(contactModel: contactModel));
-//           }
-//         },
-//         child: const Text("SAVE"),
-//       ),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: BlocProvider(
-//         create: (context) => ContactBloc(ContactRepository()),
-//         child: BlocListener<ContactBloc, ContactState>(
-//           listener: (context, state) async {
-//             if (state is ContactLoading) {
-//               showDialog(context: context,
-//                   builder: (BuildContext context){
-//                     return CustomLoading();
-//                   }
-//               );
-//             }
-//             if (state is ContactSuccess) {
-//               Navigator.pop(context);
-//               return ListView.builder(
-//                 itemCount: state.listContactModel.length,
-//                 itemBuilder: (BuildContext context, int index) {
-//                   return CustomerInfoRow(customerInfoModel: state.listCustomerInfo[index]);
-//                 }
-//               );
-//             } else if (state is ContactError) {
-//               Navigator.of(context).pop();
-//               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//                   content: Text("${state.message}")));
-//             }
-//           },
-//           child: BlocBuilder<LoginBloc, LoginState>(
-//               builder: (context, state) {
-//                 return Container(
-//                   child: Stack(
-//                     children: <Widget>[
-//                       Container(
-//                         padding: EdgeInsets.symmetric(horizontal: 20),
-//                         child: SingleChildScrollView(
-//                           child: Column(
-//                             crossAxisAlignment: CrossAxisAlignment.center,
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: <Widget>[
-//                               SizedBox(height: 120),
-//                               _logoImage(),
-//                               SizedBox(height: 60),
-//                               _emailTextField(),
-//                               SizedBox(height: 20),
-//                               _passwordTextField(),
-//                               SizedBox(height: 40),
-//                               _loginButton(context),
-//                               SizedBox(height: 10),
-//                               Text(
-//                                 "Or",
-//                                 style: TextStyle(
-//                                   fontSize: 20,
-//                                 ),
-//                               ),
-//                               SizedBox(height: 10),
-//                               _registerButton(),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 );
-//               }
-//           ),
-//         ),
-//       ),
-//       // child: Container(
-//       //   padding: const EdgeInsets.all(12),
-//       //   child: Column(
-//       //     mainAxisSize: MainAxisSize.min,
-//       //     crossAxisAlignment: CrossAxisAlignment.start,
-//       //     children: [
-//       //       Text("Name"),
-//       //       _nameTextField(),
-//       //       const SizedBox(height: 20),
-//       //       Text("Phone"),
-//       //       _phoneTextField(),
-//       //       const SizedBox(height: 20),
-//       //       Text("Address"),
-//       //       _addressTextField(),
-//       //       const SizedBox(height: 50),
-//       //       _saveButton(),
-//       //     ],
-//       //   ),
-//       // ),
-//     );
-//   }
-// }
 
 class ContactRow extends StatefulWidget {
   const ContactRow({Key? key, required this.contactModel, required this.onPopupMenuSelected}) : super(key: key);
