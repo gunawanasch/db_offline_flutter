@@ -5,7 +5,6 @@ import 'package:db_offline_flutter/library/colors.dart';
 import 'package:db_offline_flutter/model/contact_model.dart';
 import 'package:db_offline_flutter/repository/contact_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ContactPage extends StatefulWidget {
