@@ -173,14 +173,10 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
                 Center(child: CircularProgressIndicator());
               } else if (state is ContactSuccess) {
                 _listContact = state.listContact;
-                setState(() {
-                  _nameController.text = "";
-                  _phoneController.text = "";
-                  _addressController.text = "";
-                  if (_listContact.isNotEmpty) {
-                    ListView.builder(
-                      itemCount: _listContact.length,
-                      itemBuilder: (BuildContext context, int index) =>
+                if (_listContact.isNotEmpty) {
+                  ListView.builder(
+                    itemCount: _listContact.length,
+                    itemBuilder: (BuildContext context, int index) =>
                         ContactRow(
                           contactModel: _listContact[index],
                           onPopupMenuSelected: (selectedMenuItem, model) {
@@ -191,11 +187,10 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
                             }
                           },
                         ),
-                    );
-                  } else {
-                    Center(child: Text("Data is empty"));
-                  }
-                });
+                  );
+                } else {
+                  Center(child: Text("Data is empty"));
+                }
               } else if (state is ContactError) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text("${state.message}")));
