@@ -1,8 +1,10 @@
-import 'package:db_offline_flutter/ui/home_page.dart';
+import 'package:db_offline_flutter/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'injector.dart';
 import 'library/colors.dart';
 
-void main() {
+void main() async {
+  await initializeDependencies();
   runApp(MyApp());
 }
 
