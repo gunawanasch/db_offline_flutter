@@ -1,11 +1,10 @@
-import 'package:db_offline_flutter/data/models/contact_model.dart';
+import 'package:dartz/dartz.dart';
+import 'package:db_offline_flutter/core/failure.dart';
+import 'package:db_offline_flutter/domain/entities/contact_entity.dart';
 
 abstract class LocalContactRepository {
-  Future<List<ContactModel>> getAllContact();
-
-  Future<ContactModel> insertContact(ContactModel contactModel);
-
-  Future<int> updateContact(ContactModel contactModel);
-
-  Future<int> deleteContact(int idContact);
+  Future<Either<Failure, List<ContactEntity>>> getAllContact();
+  Future<Either<Failure, String>> insertContact(ContactEntity contactEntity);
+  Future<Either<Failure, String>> updateContact(ContactEntity contactEntity);
+  Future<Either<Failure, String>> deleteContact(int idContact);
 }

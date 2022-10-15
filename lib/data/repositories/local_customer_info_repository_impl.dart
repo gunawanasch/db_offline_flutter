@@ -1,25 +1,49 @@
-import 'package:db_offline_flutter/data/data_sources/local/dao/customer_info_dao.dart';
+import 'package:dartz/dartz.dart';
+import 'package:db_offline_flutter/core/failure.dart';
+import 'package:db_offline_flutter/data/datasources/local_customer_info_data_source.dart';
 import 'package:db_offline_flutter/data/models/customer_info_model.dart';
+import 'package:db_offline_flutter/domain/entities/customer_info_entity.dart';
 import 'package:db_offline_flutter/domain/repositories/local_customer_info_repository.dart';
+import 'package:sqflite/sqflite.dart';
 
 class LocalCustomerInfoRepositoryImpl implements LocalCustomerInfoRepository {
-  final CustomerInfoDao _customerInfoDao;
+  final LocalCustomerInfoDataSource dataSource;
 
-  const LocalCustomerInfoRepositoryImpl(this._customerInfoDao);
+  LocalCustomerInfoRepositoryImpl({required this.dataSource});
 
   @override
-  Future<List<CustomerInfoModel>> getAllCustomerInfo() {
-    return _customerInfoDao.getAllCustomerInfo();
+  Future<Either<Failure, List<CustomerInfoEntity>>> getAllCustomerInfo() async {
+    final result = await dataSource.getAllCustomerInfo();
+
+    return Right(result.map((data) => data.toEntity()).toList());
   }
 
   @override
-  Future<CustomerInfoModel> insertCustomerInfo(CustomerInfoModel customerInfoModel) {
-    return _customerInfoDao.insertContact(customerInfoModel);
+  Future<Either<Failure, String>> insertCustomerInfo(CustomerInfoEntity customerInfoEntity) async {
+    try {
+      final result =
+      await dataSource.insertCustomerInfo(CustomerInfoModel.fromEntity(customerInfoEntity));
+
+      return Right(result);
+    } on DatabaseException catch (e) {
+      return Left(GlobalDataFailure(e.toString()));
+    } catch (e) {
+      throw e;
+    }
   }
 
   @override
-  Future<int> deleteAllCustomerInfo() {
-    return _customerInfoDao.deleteAllCustomerInfo();
+  Future<Either<Failure, String>> deleteAllCustomerInfo() async {
+    try {
+      final result =
+      await dataSource.deleteAllCustomerInfo();
+
+      return Right(result);
+    } on DatabaseException catch (e) {
+      return Left(GlobalDataFailure(e.toString()));
+    } catch (e) {
+      throw e;
+    }
   }
 
 }

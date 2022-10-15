@@ -1,15 +1,15 @@
-import 'package:db_offline_flutter/core/usecase/usecase.dart';
-import 'package:db_offline_flutter/data/models/contact_model.dart';
+import 'package:dartz/dartz.dart';
+import 'package:db_offline_flutter/core/failure.dart';
+import 'package:db_offline_flutter/domain/entities/contact_entity.dart';
 import 'package:db_offline_flutter/domain/repositories/local_contact_repository.dart';
 
-class LocalUpdateContactUseCase implements UseCase<int, ContactModel?> {
-  final LocalContactRepository _localContactRepository;
+class LocalUpdateContactUseCase {
+  final LocalContactRepository repository;
 
-  LocalUpdateContactUseCase(this._localContactRepository);
+  LocalUpdateContactUseCase(this.repository);
 
-  @override
-  Future<int> call({ContactModel? params}) {
-    return _localContactRepository.updateContact(params!);
+  Future<Either<Failure, String>> execute(ContactEntity contactEntity) {
+    return repository.updateContact(contactEntity);
   }
 
 }

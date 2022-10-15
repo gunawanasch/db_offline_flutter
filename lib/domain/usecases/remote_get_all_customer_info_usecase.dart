@@ -1,15 +1,15 @@
-import 'package:db_offline_flutter/core/usecase/usecase.dart';
-import 'package:db_offline_flutter/data/models/get_all_customer_info_model.dart';
+import 'package:dartz/dartz.dart';
+import 'package:db_offline_flutter/core/failure.dart';
+import 'package:db_offline_flutter/domain/entities/get_all_customer_info_entity.dart';
 import 'package:db_offline_flutter/domain/repositories/remote_customer_info_repository.dart';
 
-class RemoteGetAllCustomerInfoUseCase implements UseCase<GetAllCustomerInfoModel, void> {
-  final RemoteCustomerInfoRepository _remoteCustomerInfoRepository;
+class RemoteGetAllCustomerInfoUseCase {
+  final RemoteCustomerInfoRepository repository;
 
-  RemoteGetAllCustomerInfoUseCase(this._remoteCustomerInfoRepository);
+  RemoteGetAllCustomerInfoUseCase(this.repository);
 
-  @override
-  Future<GetAllCustomerInfoModel> call({void params}) {
-    return _remoteCustomerInfoRepository.getAllCustomerInfo();
+  Future<Either<Failure, List<GetAllCustomerInfoEntity>>> execute() {
+    return repository.getAllCustomerInfo();
   }
 
 }

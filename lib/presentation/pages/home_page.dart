@@ -1,4 +1,4 @@
-import 'package:db_offline_flutter/library/colors.dart';
+import 'package:db_offline_flutter/core/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

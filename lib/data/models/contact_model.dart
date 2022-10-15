@@ -1,3 +1,5 @@
+import 'package:db_offline_flutter/domain/entities/contact_entity.dart';
+
 class ContactModel {
   int? idContact;
   String? name;
@@ -22,4 +24,19 @@ class ContactModel {
     };
   }
 
+  factory ContactModel.fromEntity(ContactEntity contactEntity) => ContactModel(
+    idContact: contactEntity.idContact,
+    name: contactEntity.name,
+    phone: contactEntity.phone,
+    address: contactEntity.address,
+  );
+
+  ContactEntity toEntity() {
+    return ContactEntity(
+      idContact: idContact,
+      name: name,
+      phone: phone,
+      address: address,
+    );
+  }
 }

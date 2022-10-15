@@ -1,4 +1,4 @@
-import 'package:db_offline_flutter/data/models/contact_model.dart';
+import 'package:db_offline_flutter/domain/entities/contact_entity.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class ContactState extends Equatable {
@@ -18,10 +18,10 @@ class ContactLoading extends ContactState {
 }
 
 class ContactSuccess extends ContactState {
-  final List<ContactModel> listContact;
+  final List<ContactEntity> listContact;
   const ContactSuccess(this.listContact);
   @override
-  List<Object> get props => [ContactModel()];
+  List<Object> get props => [ContactEntity()];
 }
 
 class ContactError extends ContactState {

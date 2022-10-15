@@ -1,4 +1,4 @@
-import 'package:db_offline_flutter/data/models/customer_info_model.dart';
+import 'package:db_offline_flutter/domain/entities/customer_info_entity.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class CustomerInfoState extends Equatable {
@@ -18,10 +18,10 @@ class CustomerInfoLoading extends CustomerInfoState {
 }
 
 class CustomerInfoSuccess extends CustomerInfoState {
-  final List<CustomerInfoModel> customerInfoModel;
-  const CustomerInfoSuccess(this.customerInfoModel);
+  final List<CustomerInfoEntity> listCustomerInfo;
+  const CustomerInfoSuccess(this.listCustomerInfo);
   @override
-  List<Object> get props => [CustomerInfoModel()];
+  List<Object> get props => [CustomerInfoEntity()];
 }
 
 class CustomerInfoError extends CustomerInfoState {

@@ -1,15 +1,31 @@
-import 'package:db_offline_flutter/data/data_sources/remote/provider/customer_info_provider.dart';
-import 'package:db_offline_flutter/data/models/get_all_customer_info_model.dart';
+import 'package:dartz/dartz.dart';
+import 'package:db_offline_flutter/core/failure.dart';
+import 'package:db_offline_flutter/data/datasources/remote_customer_info_data_source.dart';
+import 'package:db_offline_flutter/domain/entities/get_all_customer_info_entity.dart';
 import 'package:db_offline_flutter/domain/repositories/remote_customer_info_repository.dart';
+import 'package:dio/dio.dart';
 
 class RemoteCustomerInfoRepositoryImpl implements RemoteCustomerInfoRepository {
-  final CustomerInfoProvider _customerInfoProvider;
+  final RemoteCustomerInfoDataSource dataSource;
 
-  const RemoteCustomerInfoRepositoryImpl(this._customerInfoProvider);
+  RemoteCustomerInfoRepositoryImpl({required this.dataSource});
 
   @override
-  Future<GetAllCustomerInfoModel> getAllCustomerInfo() {
-    return _customerInfoProvider.getAllCustomerInfo();
+  Future<Either<Failure, List<GetAllCustomerInfoEntity>>> getAllCustomerInfo() async {
+    try {
+      final result = await dataSource.getAllCustomerInfo();
+      if (result.status == 1) {
+        return Right(result.dataGetAllCustomerInfo!.map((model) => model.toEntity()).toList());
+      } else {
+        return Left(GlobalDataFailure(result.message ?? ''));
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        return Left(GlobalDataFailure(e.response?.statusMessage ?? ''));
+      } else {
+        return const Left(GlobalDataFailure('Something wrong'));
+      }
+    }
   }
 
 }

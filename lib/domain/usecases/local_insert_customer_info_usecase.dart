@@ -1,15 +1,15 @@
-import 'package:db_offline_flutter/core/usecase/usecase.dart';
-import 'package:db_offline_flutter/data/models/customer_info_model.dart';
+import 'package:dartz/dartz.dart';
+import 'package:db_offline_flutter/core/failure.dart';
+import 'package:db_offline_flutter/domain/entities/customer_info_entity.dart';
 import 'package:db_offline_flutter/domain/repositories/local_customer_info_repository.dart';
 
-class LocalInsertCustomerInfoUseCase implements UseCase<CustomerInfoModel, CustomerInfoModel?> {
-  final LocalCustomerInfoRepository _localCustomerInfoRepository;
+class LocalInsertCustomerInfoUseCase {
+  final LocalCustomerInfoRepository repository;
 
-  LocalInsertCustomerInfoUseCase(this._localCustomerInfoRepository);
+  LocalInsertCustomerInfoUseCase(this.repository);
 
-  @override
-  Future<CustomerInfoModel> call({CustomerInfoModel? params}) {
-    return _localCustomerInfoRepository.insertCustomerInfo(params!);
+  Future<Either<Failure, String>> execute(CustomerInfoEntity customerInfoEntity) {
+    return repository.insertCustomerInfo(customerInfoEntity);
   }
 
 }

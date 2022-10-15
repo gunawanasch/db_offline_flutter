@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:db_offline_flutter/domain/entities/customer_info_entity.dart';
 
 List<CustomerInfoModel> customerInfoModelFromJson(String str) => List<CustomerInfoModel>.from(
     json.decode(str).map((x) => CustomerInfoModel.fromJson(x)));
@@ -41,4 +42,17 @@ class CustomerInfoModel {
     };
   }
 
+  factory CustomerInfoModel.fromEntity(CustomerInfoEntity customerInfoEntity) => CustomerInfoModel(
+    idCustomerInfo: customerInfoEntity.idCustomerInfo,
+    name: customerInfoEntity.name,
+    phone: customerInfoEntity.phone,
+  );
+
+  CustomerInfoEntity toEntity() {
+    return CustomerInfoEntity(
+      idCustomerInfo: idCustomerInfo,
+      name: name,
+      phone: phone,
+    );
+  }
 }

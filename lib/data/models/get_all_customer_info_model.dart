@@ -1,77 +1,62 @@
-class GetAllCustomerInfoModel {
-  GetAllCustomerInfoModel({
-      int? status, 
-      String? message, 
-      List<DataGetAllCustomerInfo>? dataGetAllCustomerInfo,}){
-    _status = status;
-    _message = message;
-    _dataGetAllCustomerInfo = dataGetAllCustomerInfo;
-}
+import 'package:db_offline_flutter/domain/entities/get_all_customer_info_entity.dart';
 
-  GetAllCustomerInfoModel.fromJson(dynamic json) {
-    _status = json['status'];
-    _message = json['message'];
+class GetAllCustomerInfoModel {
+  int? status;
+  String? message;
+  List<DataGetAllCustomerInfo>? dataGetAllCustomerInfo;
+
+  GetAllCustomerInfoModel(
+      {this.status, this.message, this.dataGetAllCustomerInfo});
+
+  GetAllCustomerInfoModel.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    message = json['message'];
     if (json['data_get_all_customer_info'] != null) {
-      _dataGetAllCustomerInfo = [];
+      dataGetAllCustomerInfo = <DataGetAllCustomerInfo>[];
       json['data_get_all_customer_info'].forEach((v) {
-        _dataGetAllCustomerInfo?.add(DataGetAllCustomerInfo.fromJson(v));
+        dataGetAllCustomerInfo!.add(new DataGetAllCustomerInfo.fromJson(v));
       });
     }
   }
-  int? _status;
-  String? _message;
-  List<DataGetAllCustomerInfo>? _dataGetAllCustomerInfo;
-
-  int? get status => _status;
-  String? get message => _message;
-  List<DataGetAllCustomerInfo>? get dataGetAllCustomerInfo => _dataGetAllCustomerInfo;
-  String? error;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['status'] = _status;
-    map['message'] = _message;
-    if (_dataGetAllCustomerInfo != null) {
-      map['data_get_all_customer_info'] = _dataGetAllCustomerInfo?.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.dataGetAllCustomerInfo != null) {
+      data['data_get_all_customer_info'] =
+          this.dataGetAllCustomerInfo!.map((v) => v.toJson()).toList();
     }
-    return map;
+    return data;
   }
-
-  GetAllCustomerInfoModel.withError(String errorValue)
-      : _dataGetAllCustomerInfo = [],
-        error = errorValue;
-
 }
 
 class DataGetAllCustomerInfo {
-  DataGetAllCustomerInfo({
-      int? idCustomerInfo, 
-      String? name, 
-      String? phone,}){
-    _idCustomerInfo = idCustomerInfo;
-    _name = name;
-    _phone = phone;
-}
+  int? idCustomerInfo;
+  String? name;
+  String? phone;
 
-  DataGetAllCustomerInfo.fromJson(dynamic json) {
-    _idCustomerInfo = json['id_customer_info'];
-    _name = json['name'];
-    _phone = json['phone'];
+  DataGetAllCustomerInfo({this.idCustomerInfo, this.name, this.phone});
+
+  DataGetAllCustomerInfo.fromJson(Map<String, dynamic> json) {
+    idCustomerInfo = json['id_customer_info'];
+    name = json['name'];
+    phone = json['phone'];
   }
-  int? _idCustomerInfo;
-  String? _name;
-  String? _phone;
-
-  int? get idCustomerInfo => _idCustomerInfo;
-  String? get name => _name;
-  String? get phone => _phone;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id_customer_info'] = _idCustomerInfo;
-    map['name'] = _name;
-    map['phone'] = _phone;
-    return map;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id_customer_info'] = this.idCustomerInfo;
+    data['name'] = this.name;
+    data['phone'] = this.phone;
+    return data;
   }
 
+  GetAllCustomerInfoEntity toEntity() {
+    return GetAllCustomerInfoEntity(
+      idCustomerInfo: idCustomerInfo,
+      name: name,
+      phone: phone,
+    );
+  }
 }

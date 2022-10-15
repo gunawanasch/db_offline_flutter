@@ -1,7 +1,7 @@
 import 'package:db_offline_flutter/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'injector.dart';
-import 'library/colors.dart';
+import 'injection.dart';
+import 'core/colors.dart';
 
 void main() async {
   await initializeDependencies();

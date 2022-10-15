@@ -1,11 +1,11 @@
-import 'package:db_offline_flutter/data/models/contact_model.dart';
+import 'package:db_offline_flutter/domain/entities/contact_entity.dart';
 import 'package:db_offline_flutter/presentation/blocs/contact/contact_bloc.dart';
 import 'package:db_offline_flutter/presentation/blocs/contact/contact_event.dart';
 import 'package:db_offline_flutter/presentation/blocs/contact/contact_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:db_offline_flutter/injector.dart';
-import 'package:db_offline_flutter/library/colors.dart';
+import 'package:db_offline_flutter/injection.dart';
+import 'package:db_offline_flutter/core/colors.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({Key? key}) : super(key: key);
@@ -18,8 +18,8 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
-  final ContactBloc _contactBloc = injector<ContactBloc>();
-  List<ContactModel> _listContact = [];
+  final ContactBloc _contactBloc = locator<ContactBloc>();
+  List<ContactEntity> _listContact = [];
 
   final InputDecoration _decoration = const InputDecoration(
     focusedBorder: UnderlineInputBorder(
@@ -89,16 +89,16 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
               ),
             );
           } else {
-            ContactModel contactModel = ContactModel();
-            contactModel.name = _nameController.text.trim();
-            contactModel.phone = _phoneController.text.trim();
-            contactModel.address = _addressController.text.trim();
+            ContactEntity contact = ContactEntity();
+            contact.name = _nameController.text.trim();
+            contact.phone = _phoneController.text.trim();
+            contact.address = _addressController.text.trim();
             Navigator.of(context).pop();
             if (idContact != null) {
-              contactModel.idContact = idContact;
-              _contactBloc.add(UpdateContact(contactModel: contactModel));
+              contact.idContact = idContact;
+              _contactBloc.add(UpdateContact(contactEntity: contact));
             } else {
-              _contactBloc.add(AddContact(contactModel: contactModel));
+              _contactBloc.add(AddContact(contactEntity: contact));
             }
             // BlocProvider.of<ContactBloc>(context).add(AddContact(contactModel: contactModel));
           }
@@ -108,12 +108,12 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
     );
   }
 
-  void _showFormContactBottomSheet(ContactModel? contactModel) async {
-    if (contactModel != null) {
+  void _showFormContactBottomSheet(ContactEntity? contact) async {
+    if (contact != null) {
       setState(() {
-        _nameController.text = contactModel.name!;
-        _addressController.text = contactModel.address!;
-        _phoneController.text = contactModel.phone!;
+        _nameController.text = contact.name!;
+        _addressController.text = contact.address!;
+        _phoneController.text = contact.phone!;
       });
     } else {
       setState(() {
@@ -145,7 +145,7 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
                   const Text("Address"),
                   _addressTextField(),
                   const SizedBox(height: 50),
-                  _saveButton(contactModel?.idContact),
+                  _saveButton(contact?.idContact),
                 ],
               ),
             ),
@@ -178,7 +178,7 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
                     itemCount: _listContact.length,
                     itemBuilder: (BuildContext context, int index) =>
                         ContactRow(
-                          contactModel: _listContact[index],
+                          contact: _listContact[index],
                           onPopupMenuSelected: (selectedMenuItem, model) {
                             if (selectedMenuItem == 0) {
                               _showFormContactBottomSheet(model);
@@ -209,7 +209,7 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
                       itemCount: state.listContact.length,
                       itemBuilder: (BuildContext context, int index) =>
                           ContactRow(
-                            contactModel: state.listContact[index],
+                            contact: state.listContact[index],
                             onPopupMenuSelected: (selectedMenuItem, model) {
                               if (selectedMenuItem == 0) {
                                 _showFormContactBottomSheet(model);
@@ -254,9 +254,9 @@ class _ContactPageState extends State<ContactPage> with TickerProviderStateMixin
 }
 
 class ContactRow extends StatefulWidget {
-  const ContactRow({Key? key, required this.contactModel, required this.onPopupMenuSelected}) : super(key: key);
-  final ContactModel contactModel;
-  final Function(int, ContactModel) onPopupMenuSelected;
+  const ContactRow({Key? key, required this.contact, required this.onPopupMenuSelected}) : super(key: key);
+  final ContactEntity contact;
+  final Function(int, ContactEntity) onPopupMenuSelected;
 
   @override
   State<ContactRow> createState() => _ContactRowState();
@@ -283,7 +283,7 @@ class _ContactRowState extends State<ContactRow> {
       ],
       elevation: 8.0,
     ).then((value) {
-      widget.onPopupMenuSelected(value!, widget.contactModel);
+      widget.onPopupMenuSelected(value!, widget.contact);
     });
   }
 
@@ -304,7 +304,7 @@ class _ContactRowState extends State<ContactRow> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.contactModel.name!,
+                        widget.contact.name!,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -312,12 +312,12 @@ class _ContactRowState extends State<ContactRow> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        widget.contactModel.phone!,
+                        widget.contact.phone!,
                         style: const TextStyle(fontSize: 15),
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        widget.contactModel.address!,
+                        widget.contact.address!,
                         style: const TextStyle(fontSize: 15),
                       ),
                     ],

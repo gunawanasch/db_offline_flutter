@@ -1,14 +1,14 @@
-import 'package:db_offline_flutter/core/usecase/usecase.dart';
+import 'package:dartz/dartz.dart';
+import 'package:db_offline_flutter/core/failure.dart';
 import 'package:db_offline_flutter/domain/repositories/local_contact_repository.dart';
 
-class LocalDeleteContactUseCase implements UseCase<int, int> {
-  final LocalContactRepository _localContactRepository;
+class LocalDeleteContactUseCase {
+  final LocalContactRepository repository;
 
-  LocalDeleteContactUseCase(this._localContactRepository);
+  LocalDeleteContactUseCase(this.repository);
 
-  @override
-  Future<int> call({int? params}) {
-    return _localContactRepository.deleteContact(params!);
+  Future<Either<Failure, String>> execute(int idContact) {
+    return repository.deleteContact(idContact);
   }
 
 }

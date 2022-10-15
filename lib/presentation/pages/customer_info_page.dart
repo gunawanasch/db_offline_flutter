@@ -1,11 +1,10 @@
-import 'package:db_offline_flutter/data/models/customer_info_model.dart';
+import 'package:db_offline_flutter/domain/entities/customer_info_entity.dart';
 import 'package:db_offline_flutter/presentation/blocs/customer_info/customer_info_bloc.dart';
 import 'package:db_offline_flutter/presentation/blocs/customer_info/customer_info_event.dart';
 import 'package:db_offline_flutter/presentation/blocs/customer_info/customer_info_state.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:db_offline_flutter/injector.dart';
+import 'package:db_offline_flutter/injection.dart';
 
 class CustomerInfoPage extends StatefulWidget {
   const CustomerInfoPage({Key? key}) : super(key: key);
@@ -15,7 +14,7 @@ class CustomerInfoPage extends StatefulWidget {
 }
 
 class _CustomerInfoPageState extends State<CustomerInfoPage> {
-  final CustomerInfoBloc _customerInfoBloc = injector<CustomerInfoBloc>();
+  final CustomerInfoBloc _customerInfoBloc = locator<CustomerInfoBloc>();
 
   @override
   void initState() {
@@ -27,7 +26,7 @@ class _CustomerInfoPageState extends State<CustomerInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Customer Info"),
+        title: const Text("Customer Info"),
       ),
       body: SafeArea(
         child: Container(
@@ -35,20 +34,20 @@ class _CustomerInfoPageState extends State<CustomerInfoPage> {
             bloc: _customerInfoBloc,
             builder: (context, state) {
               if (state is CustomerInfoInitial) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (state is CustomerInfoLoading) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (state is CustomerInfoSuccess) {
-                var listCustomerInfo = state.customerInfoModel;
+                var listCustomerInfo = state.listCustomerInfo;
                 if (listCustomerInfo.isNotEmpty) {
                   return ListView.builder(
                       itemCount: listCustomerInfo.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return CustomerInfoRow(customerInfoModel: listCustomerInfo[index]);
+                        return CustomerInfoRow(customerInfo: listCustomerInfo[index]);
                       }
                   );
                 } else {
-                  return Center(child: Text("Data is empty"));
+                  return const Center(child: Text("Data is empty"));
                 }
               } else if (state is CustomerInfoError) {
                 Navigator.of(context).pop();
@@ -66,8 +65,8 @@ class _CustomerInfoPageState extends State<CustomerInfoPage> {
 }
 
 class CustomerInfoRow extends StatelessWidget {
-  CustomerInfoRow({Key? key, required this.customerInfoModel}) : super(key: key);
-  final CustomerInfoModel customerInfoModel;
+  CustomerInfoRow({Key? key, required this.customerInfo}) : super(key: key);
+  final CustomerInfoEntity customerInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -80,21 +79,21 @@ class CustomerInfoRow extends StatelessWidget {
           children: [
             Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        customerInfoModel.name!,
-                        style: TextStyle(
+                        customerInfo.name!,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
-                        customerInfoModel.phone!,
-                        style: TextStyle(fontSize: 15),
+                        customerInfo.phone!,
+                        style: const TextStyle(fontSize: 15),
                       ),
                     ],
                   ),

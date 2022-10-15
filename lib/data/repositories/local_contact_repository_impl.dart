@@ -1,31 +1,63 @@
-import 'package:db_offline_flutter/data/data_sources/local/dao/contact_dao.dart';
+import 'package:dartz/dartz.dart';
+import 'package:db_offline_flutter/core/failure.dart';
+import 'package:db_offline_flutter/data/datasources/local_contact_data_source.dart';
 import 'package:db_offline_flutter/data/models/contact_model.dart';
+import 'package:db_offline_flutter/domain/entities/contact_entity.dart';
 import 'package:db_offline_flutter/domain/repositories/local_contact_repository.dart';
+import 'package:sqflite/sqflite.dart';
 
 class LocalContactRepositoryImpl implements LocalContactRepository {
-  final ContactDao _contactDao;
+  final LocalContactDataSource dataSource;
 
-  const LocalContactRepositoryImpl(this._contactDao);
+  LocalContactRepositoryImpl({required this.dataSource});
 
   @override
-  Future<List<ContactModel>> getAllContact() {
-    return _contactDao.getAllContact();
+  Future<Either<Failure, List<ContactEntity>>> getAllContact() async {
+    final result = await dataSource.getAllContact();
+
+    return Right(result.map((data) => data.toEntity()).toList());
   }
 
   @override
-  Future<ContactModel> insertContact(ContactModel contactModel) {
-    return _contactDao.insertContact(contactModel);
+  Future<Either<Failure, String>> insertContact(ContactEntity contactEntity) async {
+    try {
+      final result =
+      await dataSource.insertContact(ContactModel.fromEntity(contactEntity));
+
+      return Right(result);
+    } on DatabaseException catch (e) {
+      return Left(GlobalDataFailure(e.toString()));
+    } catch (e) {
+      throw e;
+    }
   }
 
   @override
-  Future<int> updateContact(ContactModel contactModel) {
-    return _contactDao.updateContact(contactModel);
+  Future<Either<Failure, String>> updateContact(ContactEntity contactEntity) async {
+    try {
+      final result =
+          await dataSource.updateContact(ContactModel.fromEntity(contactEntity));
+
+      return Right(result);
+    } on DatabaseException catch (e) {
+      return Left(GlobalDataFailure(e.toString()));
+    } catch (e) {
+      throw e;
+    }
   }
 
   @override
-  Future<int> deleteContact(int idContact) {
-    return _contactDao.deleteContact(idContact);
-  }
+  Future<Either<Failure, String>> deleteContact(int idContact) async {
+    try {
+      final result =
+          await dataSource.deleteContact(idContact);
 
+      return Right(result);
+    } on DatabaseException catch (e) {
+      return Left(GlobalDataFailure(e.toString()));
+    } catch (e) {
+      throw e;
+    }
+  }
 
 }

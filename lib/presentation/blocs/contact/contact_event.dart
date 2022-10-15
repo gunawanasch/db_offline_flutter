@@ -1,4 +1,5 @@
-import 'package:db_offline_flutter/data/models/contact_model.dart';
+
+import 'package:db_offline_flutter/domain/entities/contact_entity.dart';
 
 abstract class ContactEvent {
   const ContactEvent();
@@ -17,16 +18,16 @@ class GetAllContact extends ContactEvent {
 }
 
 class AddContact extends ContactEvent {
-  final ContactModel contactModel;
+  final ContactEntity contactEntity;
 
-  AddContact({required this.contactModel});
+  AddContact({required this.contactEntity});
 
 }
 
 class UpdateContact extends ContactEvent {
-  final ContactModel contactModel;
+  final ContactEntity contactEntity;
 
-  UpdateContact({required this.contactModel});
+  UpdateContact({required this.contactEntity});
 
 }
 
