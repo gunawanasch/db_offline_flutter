@@ -1,22 +1,24 @@
-import 'dart:async';
+import 'package:db_offline_flutter/app/routes/app_pages.dart';
 import 'package:db_offline_flutter/library/colors.dart';
-import 'package:db_offline_flutter/ui/contact_page.dart';
-import 'package:db_offline_flutter/ui/customer_info_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+import 'package:get/get.dart';
 
+import '../controllers/home_controller.dart';
+
+class HomeView extends GetView<HomeController> {
+  const HomeView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final ButtonStyle _styleButton = ElevatedButton.styleFrom(
-      primary: PrimaryColor,
+      backgroundColor: PrimaryColor,
       minimumSize: const Size.fromHeight(50),
     );
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("DB Offline"),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 80),
@@ -26,11 +28,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               style: _styleButton,
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return const ContactPage();
-                    }
-                ));
+                Get.toNamed(Routes.CONTACT);
               },
               child: const Text("CRUD"),
             ),
@@ -38,11 +36,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               style: _styleButton,
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return const CustomerInfoPage();
-                    }
-                ));
+                Get.toNamed(Routes.CUSTOMER_INFO);
               },
               child: const Text("ONLINE TO OFFLINE"),
             ),
